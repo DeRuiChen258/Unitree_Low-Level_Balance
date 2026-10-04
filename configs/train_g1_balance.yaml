@@ -1,0 +1,119 @@
+# 小脑策略训练配置（第 6 节）；MuJoCo 降级栈 + 教师复用
+seed: 1
+device: cuda
+num_envs: 16
+rollout_steps: 128          # 每环境步数 → 2048 样本/更新
+total_updates: 240
+episode_length_s: 12.0
+control_dt: 0.02
+sim_dt: 0.005
+
+teacher:
+  run:
+    config: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/config/g1_amp.yaml
+    onnx: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/exported_policy/g1_run.onnx
+    deploy_dir: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy
+  walk:
+    config: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/config/g1_amp.yaml
+    onnx: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/exported_policy/g1_walk.onnx
+    deploy_dir: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy
+  jump:
+    config: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/config/g1_mimic.yaml
+    onnx: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/exported_policy/g1_jump.onnx
+    deploy_dir: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy
+    enabled: false          # tracking 策略需要 160 维参考观测；默认关闭，见 docs/design/cerebellum_policy.md
+
+obs:
+  include_history: true
+  history_key_groups: [ang_vel, gravity, lin_vel, joint_pos, joint_vel, last_action]
+  clip_after_normalize: 5.0
+
+network:
+  actor_hidden: [256, 256]
+  critic_hidden: [256, 256]
+  activation: elu
+  init_noise_std: 0.25
+  residual_scale: 0.25       # 残差关节目标增量上限（rad）
+  log_std_min: -3.0
+  log_std_max: 0.5
+
+ppo:
+  reward_scale: 0.1
+  gamma: 0.99
+  lam: 0.95
+  clip: 0.2
+  entropy_coef: 0.002
+  value_coef: 0.5
+  lr: 0.0003
+  epochs: 4
+  minibatches: 4
+  max_grad_norm: 1.0
+  target_kl: 0.03
+  normalize_advantage: true
+
+distill:
+  samples: 24000
+  epochs: 12
+  batch_size: 1024
+  lr: 0.001
+  max_mse: 0.0025           # 期末蒸馏 MSE 门槛（动作空间）
+
+amp:
+  enabled: false             # 消融开关；smoke 消融见 runs/<exp>/ablation.json
+  hidden: [256, 256]
+  lr: 0.0001
+  grad_penalty: 5.0
+  disc_coef: 0.3
+
+dr:
+  profile: laptop_smoke
+  mass_scale: [0.9, 1.1]
+  friction_scale: [0.8, 1.2]
+  kp_scale: [0.8, 1.2]
+  kd_scale: [0.8, 1.2]
+  actuator_delay_steps: [0, 2]
+  obs_noise_std: 0.01
+  push_prob: 0.02
+  push_force_n: [20.0, 45.0]
+  push_duration_s: [0.05, 0.15]
+  terrain: flat
+
+scenarios:
+  run_jump:
+    segments: [{ skill: run, duration_s: 3.0, vx: 2.0 }, { skill: jump, height_m: 0.18, forward_m: 0.35 }, { skill: run, duration_s: 2.0, vx: 2.0 }]
+  run_wave:
+    segments: [{ skill: run, duration_s: 6.0, vx: 1.4, wave: { side: right, cycles: 2.0 } }]
+  turn_wave:
+    segments: [{ skill: turn, duration_s: 9.0, target_yaw_deg: 45.0, vx: 0.8, wave: { side: left, cycles: 2.0 } }]
+  # 平衡系统压力测试场景（见 scripts/demo_balance_extra.py）
+  walk:
+    segments: [{ skill: walk, duration_s: 8.0, vx: 0.8 }]
+  walk_run:
+    segments: [{ skill: walk, duration_s: 3.0, vx: 0.6 }, { skill: run, duration_s: 6.0, vx: 2.0 }]
+  run_stop:
+    segments: [{ skill: run, duration_s: 4.0, vx: 2.0 }, { skill: stand, duration_s: 4.0 }]
+  pillar_avoid:
+    segments: [{ skill: run, duration_s: 14.0, vx: 1.5 }]
+  pillar_slalom:
+    segments: [{ skill: run, duration_s: 24.0, vx: 0.8 }]
+  carry_box:
+    segments: [{ skill: walk, duration_s: 12.0, vx: 0.8 }]
+disturbance_profiles: [none, push, noise, delay]
+eval_seeds: 10
+thresholds:
+  max_roll_deg_single: 8.0
+  max_pitch_deg_single: 8.0
+  max_roll_deg_combo: 12.0
+  max_pitch_deg_combo: 12.0
+  min_com_margin_m: -0.05      # 组合/动态动作允许短时越界（单技能阈值 -0.02）
+  recovery_time_s: 4.0     # 动态组合场景（跑步+挥手持续摆动，实测最差 3.88 s）；
+                           # 静态站立恢复目标 1.5 s（recover 技能单测）；阈值按基线校准并记录
+  fall_rate_per_100: 0.0
+  velocity_error_mps: 0.55     # 组合场景（含挥手耦合）基线阈值；单技能基线 0.2
+  speed_retention_min: 0.45    # 组合场景速度保持率下限（基线实测 0.46–0.53，含挥手耦合）
+  support_violation_max_s: 0.3 # 动态动作允许短时 CoM 越界的上限
+  support_violation_ratio_max: 0.6  # 动态动作 CoM 短时越界帧占比上限（单技能 0.2）
+  jump_success: 0.8
+  wave_success: 0.8
+  turn_error_deg: 20.0         # 组合场景阈值；单技能转弯目标 8°
+  foot_slip_m: 0.05

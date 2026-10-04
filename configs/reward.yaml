@@ -1,0 +1,56 @@
+# 奖励与终止（第 6.3 节）；每项可独立开关 / 消融
+reward:
+  velocity_tracking:
+    enabled: true
+    weight: 1.20
+    sigma: 0.35
+  yaw_tracking:
+    enabled: true
+    weight: 0.60
+    sigma: 0.30
+  upright:
+    enabled: true
+    weight: 0.80
+    sigma_rad: 0.20
+  height:
+    enabled: true
+    weight: 0.30
+    target_m: 0.74
+    sigma_m: 0.12
+  action_rate:
+    enabled: true
+    weight: -0.020
+  torque_sq:
+    enabled: true
+    weight: -1.0e-5
+  feet_slip:
+    enabled: true
+    weight: -0.50
+  contact_schedule:
+    enabled: true
+    weight: 0.25
+  alive:
+    enabled: true
+    weight: 0.50
+  progress:
+    enabled: true
+    weight: 0.40
+  skill_tracking:
+    enabled: true
+    weight: 0.50
+    sigma_rad: 0.35
+termination:
+  min_height_m: 0.45
+  max_tilt_rad: 1.05
+  max_joint_velocity_rad_s: 30.0
+  nan_guard: true
+  max_episode_time_s: 12.0
+curriculum:
+  stages:
+    - { name: stand, min_episodes: 200, metrics: { fall_rate: 0.02 }, allowed_skills: [stand] }
+    - { name: walk, min_episodes: 400, metrics: { fall_rate: 0.05, vx_err: 0.35 }, allowed_skills: [stand, walk] }
+    - { name: speed_turn, min_episodes: 400, metrics: { fall_rate: 0.05 }, allowed_skills: [stand, walk, turn] }
+    - { name: run, min_episodes: 400, metrics: { fall_rate: 0.08 }, allowed_skills: [stand, walk, run, turn] }
+    - { name: jump, min_episodes: 300, metrics: { landing_fail_rate: 0.15 }, allowed_skills: [stand, walk, run, jump] }
+    - { name: composition, min_episodes: 600, metrics: { fall_rate: 0.05 }, allowed_skills: [stand, walk, run, jump, wave, turn] }
+  regression_fall_rate: 0.20

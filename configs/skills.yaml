@@ -1,0 +1,98 @@
+# 技能原语表（第 7.1 节 8 字段），id/priority 只由本文件决定
+skills:
+  - name: stand
+    id: 0
+    priority: 10
+    interruptible: true
+    enter_condition: "always"
+    exit_condition: "command_changed_or_safety"
+    params: { duration_s: 0.0, hold_pose: default }
+    observation: [proprio, balance, contact]
+    action_source: policy
+    termination: [nan, fall, timeout]
+    safety: { max_roll_deg: 12.0, max_pitch_deg: 12.0, min_height_m: 0.6 }
+  - name: walk
+    id: 1
+    priority: 20
+    interruptible: true
+    enter_condition: "vx_abs_gt_walk_min"
+    exit_condition: "velocity_tracked_or_command_changed"
+    params: { vx_range: [0.15, 1.2], vy_range: [-0.4, 0.4], yaw_rate_range: [-1.0, 1.0] }
+    observation: [proprio, command, balance, contact, phase]
+    action_source: policy
+    termination: [fall, nan, timeout]
+    safety: { max_speed_mps: 1.4, max_roll_deg: 10.0, max_pitch_deg: 10.0 }
+  - name: run
+    id: 2
+    priority: 30
+    interruptible: true
+    enter_condition: "vx_abs_ge_run_min"
+    exit_condition: "velocity_tracked_or_command_changed"
+    params: { vx_range: [1.4, 2.2], vy_range: [-0.3, 0.3], yaw_rate_range: [-0.8, 0.8] }
+    observation: [proprio, command, balance, contact, phase]
+    action_source: policy
+    termination: [fall, nan, timeout]
+    safety: { max_speed_mps: 2.5, max_roll_deg: 12.0, max_pitch_deg: 12.0 }
+  - name: jump
+    id: 3
+    priority: 60
+    interruptible: false
+    enter_condition: "jump_flag_and_phase_window"
+    exit_condition: "landing_and_recovery_complete"
+    params: { height_m: 0.18, forward_m: 0.35, flight_time_s: 0.30, crouch_depth_rad: 0.35 }
+    observation: [proprio, command, balance, contact, jump_phase]
+    action_source: reference
+    termination: [fall, nan, overheight, timeout]
+    safety: { max_height_m: 0.35, max_forward_m: 0.8, max_landing_tilt_deg: 15.0 }
+  - name: wave
+    id: 4
+    priority: 40
+    interruptible: true
+    enter_condition: "wave_requested"
+    exit_condition: "cycles_complete_or_balance_degraded"
+    params: { side: right, cycles: 2.0, frequency_hz: 1.2, amplitude_scale: 1.0 }
+    observation: [proprio, command, balance]
+    action_source: overlay
+    termination: [balance_degraded, nan, timeout]
+    safety: { max_shoulder_rad: 1.6, max_elbow_rad: 2.0, max_balance_deg: 8.0 }
+  - name: turn
+    id: 5
+    priority: 30
+    interruptible: true
+    enter_condition: "target_yaw_gt_threshold"
+    exit_condition: "yaw_error_lt_threshold_or_timeout"
+    params: { target_yaw_deg: 45.0, yaw_rate_max_rad_s: 0.8 }
+    observation: [proprio, command, balance, contact, phase]
+    action_source: policy
+    termination: [fall, nan, timeout]
+    safety: { max_yaw_rate_rad_s: 1.0, max_roll_deg: 10.0 }
+  - name: recover
+    id: 6
+    priority: 80
+    interruptible: false
+    enter_condition: "balance_margin_bad_or_fall_risk"
+    exit_condition: "stability_restored_or_timeout"
+    params: { max_recovery_time_s: 1.5, small_step_m: 0.08 }
+    observation: [proprio, balance, contact]
+    action_source: policy
+    termination: [timeout, nan]
+    safety: { min_height_m: 0.5, max_roll_deg: 20.0 }
+  - name: safe_stop
+    id: 7
+    priority: 100
+    interruptible: false
+    enter_condition: "safety_veto_or_estop_or_watchdog"
+    exit_condition: "manual_reset_only"
+    params: { damp_only: false, hold_pose: default }
+    observation: [proprio, contact]
+    action_source: hold
+    termination: []
+    safety: { latched: true }
+
+skill_embedding_dim: 16
+overlay_groups:
+  left_arm: [left_shoulder_pitch, left_shoulder_roll, left_shoulder_yaw, left_elbow, left_wrist_roll, left_wrist_pitch, left_wrist_yaw]
+  right_arm: [right_shoulder_pitch, right_shoulder_roll, right_shoulder_yaw, right_elbow, right_wrist_roll, right_wrist_pitch, right_wrist_yaw]
+  lower_body: [left_hip_pitch, left_hip_roll, left_hip_yaw, left_knee, left_ankle_pitch, left_ankle_roll,
+               right_hip_pitch, right_hip_roll, right_hip_yaw, right_knee, right_ankle_pitch, right_ankle_roll]
+  torso: [waist_yaw, waist_roll, waist_pitch]

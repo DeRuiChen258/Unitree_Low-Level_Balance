@@ -1,0 +1,46 @@
+{
+  "questions_version": "1.0",
+  "questions": {
+    "motion_primitive_head": {
+      "type": "choice",
+      "instructions": "Given the robot state and candidates, which primitive should the cerebellum execute next?",
+      "criteria": {
+        "continue_current": "keep executing the current skill without switching",
+        "stand": "stop locomotion and hold a stable standing pose",
+        "walk": "walk at the commanded low speed",
+        "run": "run at the commanded high speed",
+        "run_jump": "approach and perform a controlled jump",
+        "wave_while_run": "keep running while the upper body waves",
+        "turn_left": "turn left to the commanded yaw",
+        "recover": "perform a recovery step because balance is degrading",
+        "safe_stop": "stop motion immediately and latch a safe stop"
+      }
+    },
+    "safety_veto_head": {
+      "type": "noul",
+      "instructions": "Does the current state require immediate safety veto of the proposed primitive?",
+      "criteria": {
+        "false": "no, the state is within validated limits",
+        "true": "yes, a limit is exceeded or the state is unsafe"
+      }
+    },
+    "recovery_head": {
+      "type": "choice",
+      "instructions": "If balance is degrading, which recovery action is appropriate?",
+      "criteria": {
+        "none": "no recovery needed",
+        "small_step": "take one small recovery step",
+        "stand_recover": "stop locomotion and recover to standing",
+        "safe_stop": "latch a safe stop and request human review"
+      }
+    },
+    "escalation_head": {
+      "type": "noul",
+      "instructions": "Should human review or takeover be requested now?",
+      "criteria": {
+        "false": "no, autonomy may continue",
+        "true": "yes, request human review now"
+      }
+    }
+  }
+}

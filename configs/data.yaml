@@ -1,0 +1,121 @@
+# 数据管线参数（第 4 节）
+profile: smoke          # smoke | full
+seed: 1
+sources:
+  humanml3d_272d:
+    enabled: true
+    root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1/HumanML3D_272d
+    fps: 30.0
+    license: academic-AMASS-HumanML3D
+    use_zip: false          # 只读解压目录，禁止 zip/目录混用
+  humanml3d_263d:
+    enabled: false          # 本机仅解出 1 个样本，默认关闭；开启但缺文件时显式报错
+    root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1/HumanML3D/HumanML3D
+    fps: 30.0
+    license: academic
+  kit_ml:
+    enabled: false          # .rar 未解压；开启即报错拒绝运行
+    root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1/KIT-ML
+    fps: 12.5
+    license: academic
+  amass:
+    enabled: false          # 空目录；禁止静默跳过统计
+    root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1/AMASS
+    fps: 120.0
+    license: academic
+profiles:
+  smoke:
+    max_clips: 96
+    clips_per_skill: 6
+    max_frames_per_clip: 220
+    min_frames: 40
+  full:
+    max_clips: 0             # 0 = 全量
+    clips_per_skill: 0
+    max_frames_per_clip: 0
+    min_frames: 30
+
+canonicalize:
+  target_fps: 30.0
+  root_align: true
+  phase_parameterize: true
+  min_frames: 20
+
+retarget:
+  robot: unitree_g1_29dof
+  backend: mujoco_dls_ik
+  ik_iters: 40
+  ik_lr: 0.65
+  ik_damping: 1.0e-3
+  ik_tolerance_m: 0.06
+  ik_reject_m: 0.16
+  joint_limit_margin_rad: 0.02
+  keypoints:
+    # SMPL-22 索引 → G1 身体名（用于 IK 目标）
+    pelvis: 0
+    left_hip: 1
+    right_hip: 2
+    left_knee: 4
+    right_knee: 5
+    left_ankle: 7
+    right_ankle: 8
+    left_foot: 10
+    right_foot: 11
+    head: 15
+    left_shoulder: 16
+    right_shoulder: 17
+    left_elbow: 18
+    right_elbow: 19
+    left_wrist: 20
+    right_wrist: 21
+
+segment:
+  min_segment_frames: 24
+  boundary_smoothing: 5
+  keyword_rules:
+    jump: [jump, leap, hop, 跳]
+    run: [run, sprint, jog, 跑]
+    walk: [walk, stroll, march, 走]
+    wave: [wave, waving, greet, 挥手]
+    turn: [turn, turning, rotate, 转]
+    stand: [stand, standing, idle, 站]
+    recover: [recover, balance, stumble, 恢复]
+  velocity_thresholds:
+    stand_max_mps: 0.15
+    walk_min_mps: 0.15
+    run_min_mps: 1.4
+    turn_min_rad_s: 0.6
+
+augment:
+  mirror: true
+  tempo: [0.85, 1.15]
+  amplitude: [0.9, 1.1]
+  phase_jitter: 0.05
+  root_xy_noise_m: [0.01, 0.03]
+  yaw_noise_deg: 2.0
+  obs_noise_std: 0.01
+  obs_delay_steps: [0, 2]
+  transitions: [["run", "jump"], ["turn", "wave"], ["run", "wave"]]
+  blend_window_s: [0.3, 0.6]
+  augmentation_copies: 2
+
+physics_filter:
+  position_margin_rad: 0.02
+  velocity_limit_scale: 1.0
+  acceleration_limit_rad_s2: 120.0
+  jerk_limit_rad_s3: 4000.0
+  foot_slip_max_m_s: 0.35
+  foot_penetration_max_m: 1.0e-3
+  root_height_min_m: 0.55
+  com_margin_min_m: -0.02
+  allow_dynamic_violation_frames: 12
+
+split:
+  ratios: { train: 0.8, val: 0.1, test: 0.1 }
+  group_by: source_clip
+  seed: 1
+
+manifest:
+  dataset_version: g1balance-272d-smoke-v1
+  output_dir: runs/data_quality
+  hash_algorithm: sha256

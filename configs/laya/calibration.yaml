@@ -1,0 +1,36 @@
+# 校准与阈值（第 8.3 节）
+confidence_threshold: 0.60
+timeout_ms: 1000            # 与 configs/laya/model.yaml 一致（实测 p50≈78 ms，预热后）
+risk_threshold: 0.35
+veto_fail_closed: true
+temperature: inherit          # 继承 rl_agent_config.json；重校准必须写报告
+temperature_by_options: inherit
+fallback_policy:
+  low_confidence: stand
+  high_risk: safe_stop
+  model_timeout: hold_current_skill
+  model_error: hold_current_skill
+escalation_policy:
+  max_consecutive_failures: 3
+  escalate_cost: 0.5
+  wrong_act_cost: 3.0
+  flip_window_s: 1.0
+  max_flips: 3
+rules:
+  # Tier 0 硬规则：任何一条命中 → safety_veto=true（与模型无关）
+  roll_abort_deg: 8.0
+  pitch_abort_deg: 8.0
+  com_margin_min_m: -0.02
+  single_support_max_s: 0.60
+  watchdog_trip: true
+  state_nan: true
+  estop: true
+risk_weights:
+  roll: 0.30
+  pitch: 0.25
+  com_margin: 0.25
+  contact_loss: 0.10
+  model_uncertainty: 0.10
+report:
+  ece_bins: 10
+  min_ece_improvement: 0.0

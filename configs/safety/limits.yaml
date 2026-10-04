@@ -1,0 +1,91 @@
+# 安全阈值唯一来源（缺失即 fail-closed，第 10.3 节）
+joints:
+  position_margin_rad: 0.02
+  emergency_velocity_rad_s: 30.0
+  # 速度额定值：部署 YAML（g1_amp.yaml）未给出速度上限，以下为 G1 执行器工程估算
+  # （warn=0.7×rated，abort=1.0×rated）；真机首测前必须用 SDK2 实测/官方 datasheet 复核。
+  groups:
+    hip_pitch:   { velocity_warn_rad_s: 14.0, velocity_abort_rad_s: 20.0, torque_warn_nm: 60.0, torque_abort_nm: 88.0, temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+    hip_roll:    { velocity_warn_rad_s: 14.0, velocity_abort_rad_s: 20.0, torque_warn_nm: 60.0, torque_abort_nm: 88.0, temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+    hip_yaw:     { velocity_warn_rad_s: 14.0, velocity_abort_rad_s: 20.0, torque_warn_nm: 40.0, torque_abort_nm: 60.0, temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+    knee:        { velocity_warn_rad_s: 14.0, velocity_abort_rad_s: 20.0, torque_warn_nm: 90.0, torque_abort_nm: 139.0, temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+    ankle_pitch: { velocity_warn_rad_s: 10.5, velocity_abort_rad_s: 15.0, torque_warn_nm: 35.0, torque_abort_nm: 50.0, temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+    ankle_roll:  { velocity_warn_rad_s: 10.5, velocity_abort_rad_s: 15.0, torque_warn_nm: 35.0, torque_abort_nm: 50.0, temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+    waist:       { velocity_warn_rad_s: 10.5, velocity_abort_rad_s: 15.0, torque_warn_nm: 35.0, torque_abort_nm: 50.0, temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+    arm:         { velocity_warn_rad_s: 14.0, velocity_abort_rad_s: 20.0, torque_warn_nm: 18.0, torque_abort_nm: 25.0, temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+    wrist:       { velocity_warn_rad_s: 10.5, velocity_abort_rad_s: 15.0, torque_warn_nm: 3.5,  torque_abort_nm: 5.0,  temperature_warn_c: 65.0, temperature_abort_c: 80.0 }
+  rated:
+    hip_pitch:   { velocity_rad_s: 20.0, acceleration_rad_s2: 200.0, jerk_rad_s3: 6000.0 }
+    hip_roll:    { velocity_rad_s: 20.0, acceleration_rad_s2: 200.0, jerk_rad_s3: 6000.0 }
+    hip_yaw:     { velocity_rad_s: 20.0, acceleration_rad_s2: 200.0, jerk_rad_s3: 6000.0 }
+    knee:        { velocity_rad_s: 20.0, acceleration_rad_s2: 200.0, jerk_rad_s3: 6000.0 }
+    ankle_pitch: { velocity_rad_s: 15.0, acceleration_rad_s2: 150.0, jerk_rad_s3: 4500.0 }
+    ankle_roll:  { velocity_rad_s: 15.0, acceleration_rad_s2: 150.0, jerk_rad_s3: 4500.0 }
+    waist:       { velocity_rad_s: 15.0, acceleration_rad_s2: 150.0, jerk_rad_s3: 4500.0 }
+    arm:         { velocity_rad_s: 20.0, acceleration_rad_s2: 200.0, jerk_rad_s3: 6000.0 }
+    wrist:       { velocity_rad_s: 15.0, acceleration_rad_s2: 150.0, jerk_rad_s3: 4500.0 }
+  joint_group:
+    left_hip_pitch: hip_pitch
+    right_hip_pitch: hip_pitch
+    left_hip_roll: hip_roll
+    right_hip_roll: hip_roll
+    left_hip_yaw: hip_yaw
+    right_hip_yaw: hip_yaw
+    left_knee: knee
+    right_knee: knee
+    left_ankle_pitch: ankle_pitch
+    right_ankle_pitch: ankle_pitch
+    left_ankle_roll: ankle_roll
+    right_ankle_roll: ankle_roll
+    waist_yaw: waist
+    waist_roll: waist
+    waist_pitch: waist
+    left_shoulder_pitch: arm
+    right_shoulder_pitch: arm
+    left_shoulder_roll: arm
+    right_shoulder_roll: arm
+    left_shoulder_yaw: arm
+    right_shoulder_yaw: arm
+    left_elbow: arm
+    right_elbow: arm
+    left_wrist_roll: wrist
+    right_wrist_roll: wrist
+    left_wrist_pitch: wrist
+    right_wrist_pitch: wrist
+    left_wrist_yaw: wrist
+    right_wrist_yaw: wrist
+attitude:
+  roll_warn_deg: 5.0
+  roll_abort_deg: 8.0
+  roll_emergency_deg: 15.0
+  pitch_warn_deg: 5.0
+  pitch_abort_deg: 8.0
+  pitch_emergency_deg: 15.0
+  # 角速度阈值覆盖动态技能（跑跳落地实测峰值 196 deg/s = 3.42 rad/s）；
+  # 真机首次站立测试应使用更低阈值（见 docs/design/safety.md 的 Gate 3 说明）。
+  angular_velocity_warn_deg_s: 150.0
+  angular_velocity_abort_deg_s: 250.0
+  angular_velocity_emergency_deg_s: 400.0
+support:
+  com_radius_warn_m: 0.04
+  com_radius_abort_m: 0.10
+  contact_loss_warn_s: 0.10
+  contact_loss_abort_s: 0.20
+  single_foot_max_s: 0.60
+base:
+  height_warn_m: 0.62
+  height_abort_m: 0.50
+  height_emergency_m: 0.35
+  drift_warn_m: 0.25
+  drift_abort_m: 0.60
+  vertical_velocity_abort_m_s: 1.5
+watchdog:
+  state_timeout_s: 0.20
+  command_timeout_s: 0.20
+  loop_timeout_s: 0.05
+estop:
+  action: damp                      # damp | hold | zero_torque
+  latching: true
+  requires_manual_reset: true
+  independent_channel: true
+limits_version: "1.0"

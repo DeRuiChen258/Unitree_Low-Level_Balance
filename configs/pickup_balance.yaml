@@ -1,0 +1,30 @@
+# Balance Monitor / Footstep Planner 参数（新增需求第 6–9 节）
+monitor:
+  warn_margin_m: 0.08
+  step_margin_m: 0.0
+  critical_margin_m: -0.05
+  unstable_margin_m: -0.04
+  prediction_horizon_s: 0.25
+  use_com: true
+  use_zmp: true
+  use_capture_point: true
+planner:
+  max_step_length_m: 0.28
+  max_step_width_m: 0.16
+  min_foot_separation_m: 0.12
+  margin_target_m: 0.06
+  fallback_step_m: 0.12
+decision:
+  reach_margin_m: 0.015
+  lunge_margin_m: 0.0
+  critical_margin_m: -0.05
+  max_pitch_rad: 1.05
+  confidence_threshold: 0.55
+  risk_threshold: 0.7
+manager:
+  max_steps: 3
+  target_bend_pitch: 0.50
+  crouch_depth: 0.17
+  hip_shift: 0.05
+  proactive_lunge_progress: 0.30
+  proactive_lunge_bias_m: 0.18

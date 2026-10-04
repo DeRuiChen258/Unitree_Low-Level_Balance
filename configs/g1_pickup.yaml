@@ -1,0 +1,59 @@
+# G1 弯腰拾取 + 自主弓步系统配置（新增需求）
+scene_path: /home/violet/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1/scene.xml
+
+# 频率（第 23 节）：500 Hz 物理 / 100 Hz 控制 / 20 Hz 决策 / 10 Hz 脚步
+sim_dt: 0.002
+control_dt: 0.01
+decision_dt: 0.05
+footstep_dt: 0.1
+
+# 任务参数
+trunk_pitch_target: 0.50      # 弯腰目标（腰 pitch 上限 0.52 rad）；弯腰为主、屈膝为辅
+stance_width: 0.24            # 双腿总间距（±0.12 m）：略宽于自然站姿，但不过度外展/岔腿
+reach_side: right
+two_handed: true              # 双手抱取（双臂同步环抱箱体近侧上角）
+lift_height: 0.18
+grasp_distance: 0.12          # mock grasp 距离阈值（研究用）
+reach_threshold: 0.15
+max_steps: 3
+reach_margin: 0.015           # 允许 REACH 的最小稳定裕度
+step_margin: 0.0
+critical_margin: -0.05
+max_episode_s: 35.0
+
+# 弯腰/屈膝配比与腿部 IK 姿态正则（避免直腿奇异 → 双脚被地面反推外滑）
+bend_crouch_depth: 0.17
+bend_hip_shift: 0.12          # 弯腰时骨盆后坐（保持质心在支撑域内，避免过早迈步/前倾失衡）
+posture_weight: 0.06
+com_margin_target: 0.030      # CoM 目标稳定裕度（小则更敢前倾去够，但必须保持为正）
+com_margin_gain: 0.8          # 裕度误差 → 骨盆前后调节增益（m / m）
+
+# 载荷：物体质量 = 机器人总质量 × object_mass_ratio（约半体重），重力以等效力旋加载到躯干
+object_mass_ratio: 0.50
+# 箱体：0.20 × 0.20 × 0.90 m。G1 手臂在深弯腰姿态下只能下探到约 0.56 m，
+# 箱体越矮，握持点在侧面上的相对高度就越高（0.60 m 箱体时手在顶边 = 103% 高度）；
+# 0.90 m 高时握持点落在侧面 ~70% 处，视觉上是「抱两侧」而不是「扶顶边」。
+object_half_height: 0.45
+object_half_depth: 0.10       # 0.20 m 深（横截面比原始箱体小 ~50%）
+object_half_width: 0.10       # 0.20 m 宽
+embrace_clearance_m: 0.11     # 腕部目标相对箱体侧面的外移量（手掌/手指不插入箱体）
+embrace_side_drop_m: 0.30     # 抱取点自箱体顶边下降 0.30 m → 命中侧面上部（手高 ~0.60 m）
+object_base_height_m: 0.0     # >0 时把箱体放在等高度台面上（可进一步降低相对握持位置）
+
+# Phase-1 支撑脚锚定：与骨盆 gantry 同时启用会过约束（能量注入、双脚被踢飞），
+# 默认关闭；外滑问题已由「腿部 IK 姿态正则」在根因上解决
+foot_anchor: false
+
+# Phase-1 基座稳定辅助（虚拟 gantry；后续由 WBC/RL 替换）
+base_assist:
+  enabled: true
+  pos_kp: 5000.0
+  pos_kd: 120.0
+  max_force_n: 1000.0     # 负重（约半体重）时需更大支撑力
+  rot_kp: 900.0
+  rot_kd: 70.0
+  max_torque_nm: 380.0    # 载荷前伸产生的倾覆力矩由虚拟 gantry 承担（Phase-1 披露项）
+
+carry_pull_duration_s: 1.2   # 抓取后把载荷收到胸腹前的时长
+
+frequencies_note: "decision/balance 低频，连续控制由 IK+PD 执行；JEV-like 不进入 500 Hz 环"

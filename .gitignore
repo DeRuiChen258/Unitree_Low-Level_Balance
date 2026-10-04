@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 测试/静态检查缓存
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# 运行产物与训练产物（可由 README / start.sh 复现，体积大不入库）
+runs/
+experiments/
+*.npz
+*.pth
+*.pt
+
+# 录屏：保留抽帧图与说明，MP4 由 `./start.sh` 重新生成
+recordings/*.mp4
+recordings/clips.txt
+
+# MuJoCo / 日志
+MUJOCO_LOG.TXT
+*.log
+
+# 编辑器/系统
+.idea/
+.vscode/
+.DS_Store

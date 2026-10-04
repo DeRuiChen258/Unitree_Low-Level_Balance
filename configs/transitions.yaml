@@ -1,0 +1,38 @@
+# 技能迁移图与过渡参数（第 7.2/7.3 节）
+min_hold_time_s:
+  default: 0.4
+  jump: 1.2
+  safe_stop: 0.0
+  recover: 1.0
+transitions:
+  - { from: stand, to: walk, blend_window_s: 0.4, phase_alignment: double_support }
+  - { from: stand, to: wave, blend_window_s: 0.4, phase_alignment: any }
+  - { from: stand, to: turn, blend_window_s: 0.4, phase_alignment: any }
+  - { from: walk, to: run, blend_window_s: 0.5, phase_alignment: double_support }
+  - { from: run, to: walk, blend_window_s: 0.5, phase_alignment: double_support }
+  - { from: run, to: jump, blend_window_s: 0.3, phase_alignment: takeoff_window }
+  - { from: walk, to: jump, blend_window_s: 0.3, phase_alignment: takeoff_window }
+  - { from: jump, to: run, blend_window_s: 0.3, phase_alignment: landing }
+  - { from: jump, to: walk, blend_window_s: 0.3, phase_alignment: landing }
+  - { from: walk, to: wave, blend_window_s: 0.5, phase_alignment: any }
+  - { from: run, to: wave, blend_window_s: 0.5, phase_alignment: any }
+  - { from: wave, to: stand, blend_window_s: 0.4, phase_alignment: any }
+  - { from: wave, to: walk, blend_window_s: 0.4, phase_alignment: double_support }
+  - { from: wave, to: run, blend_window_s: 0.4, phase_alignment: double_support }
+  - { from: turn, to: wave, blend_window_s: 0.4, phase_alignment: any }
+  - { from: turn, to: stand, blend_window_s: 0.4, phase_alignment: double_support }
+  - { from: any, to: recover, blend_window_s: 0.2, phase_alignment: any }
+  - { from: any, to: safe_stop, blend_window_s: 0.1, phase_alignment: any }
+fallback_chain:
+  jump: [recover, stand, safe_stop]
+  wave: [wave_reduced, stand, safe_stop]
+  run: [walk, stand, safe_stop]
+  turn: [double_support, stand, safe_stop]
+  recover: [stand, safe_stop]
+degradation:
+  wave_reduced: { amplitude_scale: 0.5, frequency_scale: 0.8 }
+  double_support: { extra_support_s: 0.15 }
+hysteresis:
+  balance_bad_deg: 6.0
+  balance_good_deg: 3.0
+  min_switch_interval_s: 0.5

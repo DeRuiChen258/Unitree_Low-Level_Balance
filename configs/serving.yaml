@@ -1,0 +1,18 @@
+# 决策服务配置（第 9 节）
+host: 127.0.0.1
+port: 8765
+max_concurrency: 4
+batch_size: 8
+batch_window_ms: 20
+timeout_ms: 500
+device: cuda
+cpu_fallback: true
+log_level: INFO
+model_backend: laya          # laya | local_calibrated | onnx
+serialize_gpu_jobs: true
+max_batch_tokens: 4096
+version:
+  model: laya-typed-decisions
+  checkpoint: typed-decisions
+  feature_version: "1.0"
+  questions_version: "1.0"

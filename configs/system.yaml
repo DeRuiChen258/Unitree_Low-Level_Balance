@@ -1,0 +1,54 @@
+# 系统级唯一参数来源（第 3.4 节时序边界 + 第 11.2.9 节）
+robot: unitree_g1_29dof
+control_dt: 0.02
+sim_dt: 0.005
+control_decimation: 4
+history_length: 4
+feature_version: "1.0"
+obs_spec_version: "1.0"
+model_version: "1.0.0"
+questions_version: "1.0"
+joint_order: policy   # 部署/策略关节序（isaac），与 g1_amp.yaml 一致
+
+limits:
+  # 策略关节序（29 DOF）关节限位，来源：Action/G1_run/deploy/g1_deploy/config/g1_amp.yaml
+  # 与 assets/g1_29dof.xml（isaac_to_mujoco_map 映射）。代码启动时与 MJCF 交叉校验。
+  mjcf_scene: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/assets/scene_29dof.xml
+
+paths:
+  dataset_root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1
+  action_root: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action
+  laya_root: /home/violet/Workspace/Model/laya/model/convaiinnovations/laya
+  mujoco_viewer: /home/violet/Workspace/Code/Embedded_code/unitree_workspace/scripts/mujoco_sim.py
+  gmr_root: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/legged_rl_lab/GMR
+  menagerie_g1: /home/violet/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1
+  menagerie_scene: /home/violet/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1/scene.xml
+  runs_dir: runs
+
+runtime:
+  device: cuda                 # 训练 / LayA 推理默认器件
+  data_workers: 8              # CPU：数据管线 / IK 并行
+  env_workers: 16              # CPU：MuJoCo 并行环境数（第 6.5 节小规模基准）
+  cpu_threads: 8               # torch CPU 线程上限，避免与 MuJoCo 争抢
+  laya_device: cuda
+  laya_cpu_fallback: true
+  max_gpu_memory_fraction: 0.85
+  # 训练与 LayA 大模型推理串行化：避免 8 GB 显存争抢
+  serialize_gpu_jobs: true
+
+logging:
+  level: INFO
+  jsonl: true
+  event_types:
+    - skill_switch
+    - decision
+    - safety_event
+    - training_epoch
+    - data_pipeline
+    - eval_scenario
+    - demo_frame
+
+decision_loop:
+  rate_hz: 5.0
+  timeout_ms: 500
+  hold_last_valid: true

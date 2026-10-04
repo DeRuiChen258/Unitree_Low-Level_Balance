@@ -1,0 +1,17 @@
+# 域随机化（第 18 节）：训练 ON / 标准测试固定环境
+enabled: false
+mass_scale: [0.9, 1.1]
+friction_scale: [0.8, 1.2]
+damping_scale: [0.8, 1.2]
+sensor_noise_std: 0.002
+imu_noise_std: 0.01
+latency_steps: [0, 1]
+object_mass_scale: [0.8, 1.2]
+object_position_noise_m: 0.02
+object_size_scale: [0.9, 1.1]
+standard_test:
+  enabled: false
+  mass_scale: [1.0, 1.0]
+  friction_scale: [1.0, 1.0]
+  sensor_noise_std: 0.0
+  latency_steps: [0, 0]

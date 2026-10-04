@@ -1,0 +1,38 @@
+# 安全状态机（第 10.2 节）
+initial: IDLE
+states: [IDLE, STAND_UP, STAND, LOCOMOTION, SKILL_EXECUTION, RECOVER, FALLEN, FALL_RECOVERY, SAFE_STOP, FAULT_RECOVERY, ERROR]
+latching: [SAFE_STOP, ERROR]
+transitions:
+  - { from: IDLE, to: STAND_UP, event: start }
+  - { from: STAND_UP, to: STAND, event: stand_ready }
+  - { from: STAND_UP, to: SAFE_STOP, event: safety_veto }
+  - { from: STAND, to: LOCOMOTION, event: locomotion_command }
+  - { from: STAND, to: SKILL_EXECUTION, event: skill_command }
+  - { from: STAND, to: FALLEN, event: fall_detected }
+  - { from: LOCOMOTION, to: STAND, event: stop_command }
+  - { from: LOCOMOTION, to: SKILL_EXECUTION, event: skill_command }
+  - { from: LOCOMOTION, to: RECOVER, event: balance_degraded }
+  - { from: LOCOMOTION, to: FALLEN, event: fall_detected }
+  - { from: LOCOMOTION, to: SAFE_STOP, event: safety_veto }
+  - { from: SKILL_EXECUTION, to: LOCOMOTION, event: skill_done }
+  - { from: SKILL_EXECUTION, to: STAND, event: skill_done_stand }
+  - { from: SKILL_EXECUTION, to: RECOVER, event: skill_failed }
+  - { from: SKILL_EXECUTION, to: FALLEN, event: fall_detected }
+  - { from: SKILL_EXECUTION, to: SAFE_STOP, event: safety_veto }
+  - { from: RECOVER, to: STAND, event: recovered }
+  - { from: RECOVER, to: SAFE_STOP, event: recovery_timeout }
+  - { from: RECOVER, to: FALLEN, event: fall_detected }
+  - { from: FALLEN, to: FALL_RECOVERY, event: recovery_enabled }
+  - { from: FALLEN, to: SAFE_STOP, event: safety_veto }
+  - { from: FALL_RECOVERY, to: STAND, event: stand_ready }
+  - { from: FALL_RECOVERY, to: SAFE_STOP, event: recovery_timeout }
+  - { from: SAFE_STOP, to: FAULT_RECOVERY, event: manual_reset }
+  - { from: FAULT_RECOVERY, to: IDLE, event: selftest_ok }
+  - { from: ERROR, to: FAULT_RECOVERY, event: manual_reset }
+recovery:
+  fall_detection:
+    height_below_m: 0.45
+    tilt_above_deg: 60.0
+    confirm_s: 0.15
+  recovery_timeout_s: 5.0
+  require_manual_reset_after_safe_stop: true

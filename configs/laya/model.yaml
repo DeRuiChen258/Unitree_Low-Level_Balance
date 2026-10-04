@@ -1,0 +1,28 @@
+# LayA 决策模型配置（第 8.2 节）
+primary: typed-decisions
+fallback: multilingual
+device: cuda
+cpu_fallback: true
+batch_size: 4
+timeout_ms: 1000          # 本机实测 p50≈78 ms（预热后）；1000 ms 为服务上界
+max_len_override: 1024
+state_template: "1.0"
+questions_file: configs/laya/questions.json
+calibration_file: configs/laya/calibration.yaml
+allow_heuristic_fallback: true     # 显式降级（记录 reason），仅在模型不可用时
+checkpoints:
+  base:
+    dir: /home/violet/Workspace/Model/laya/model/convaiinnovations/laya
+    encoder: encoder
+    weights: model.safetensors
+    tokenizer: tokenizer
+  typed-decisions:
+    dir: /home/violet/Workspace/Model/laya/model/convaiinnovations/laya/typed-decisions
+    encoder: encoder
+    weights: model.safetensors
+    tokenizer: tokenizer
+  multilingual:
+    dir: /home/violet/Workspace/Model/laya/model/convaiinnovations/laya/multilingual
+    encoder: encoder
+    weights: model.safetensors
+    tokenizer: tokenizer
