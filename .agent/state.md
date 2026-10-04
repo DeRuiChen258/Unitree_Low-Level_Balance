@@ -131,6 +131,19 @@
   保留 `recordings/frame_sheet_*.png` 抽帧证据；录像可由 `RENDER=none RECORD=1 ./start.sh` 重建。
 - 敏感信息扫描（token/私钥/password）无命中。
 
+### 2026-10-05 追加：README 内嵌完整演示动图 + 详细化
+
+- 实测确认 **GitHub 会过滤 README 中的 `<video>` 标签**（raw 保留、渲染 HTML 无 `<video>`），
+  `github.com/upload/policies/assets` 附件通道用 token 直连返回 422，
+  因此采用**动图内联**方案：`recordings/demo_full.gif`（6.6 MB，3× 加速、400×300、6 fps、
+  由 `recordings/demo_full.mp4` 转制）随仓库入库，并嵌在 README 6.1 节正文；
+  原始 2 分钟 MP4 仍在 Release v1.0.0。
+- README 重写为详细版（388 行）：目录、项目定位表、mermaid 架构图、仓库结构树、
+  环境与 CUDA/CPU 分工、快速开始、演示（内嵌动图 + 逐段录像明细 + 抽帧图 + 录制参数）、
+  关键实测指标（平衡 7 场景 / 拾取 10 场景 / 4-baseline 对照）、拾取子系统详解
+  （原语表 / IK 与 PD / 载荷模型 / 判定门禁）、决策层与安全层、测试与验收门禁、
+  已知限制与披露（8 条）、Roadmap、许可与致谢。
+
 ## 2026-10-05 主平衡系统可视化演示（用户要求）
 
 - 入口：`python scripts/demo.py --scenario <run_wave|run_jump|turn_wave> --render viewer`

@@ -3,6 +3,10 @@
 本目录保存 `./start.sh` 全流程演示的**抽帧核验图**；MP4 录像体积较大，未纳入版本库，
 按下面命令可一键重新生成（本地实测：5 段合计约 30 MB）。
 
+`demo_full.gif`（6.6 MB，3× 加速、400×300、由 `demo_full.mp4` 转制）**已入库并内嵌在主
+[README 第 6.1 节](../README.md#61-完整演示正文内联播放)**，打开仓库首页即可看到完整流程动图——
+GitHub 渲染时会把 README 里的 `<video>` 标签过滤掉（实测），动图是唯一能"正文内播放"的形式。
+
 > 已录好的演示录像（5 段 MP4 + 合并完整版 + 抽帧图，共 8 个附件）见
 > [Releases · v1.0.0](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/tag/v1.0.0)；
 > 逐段说明与实测指标见主 [README「演示录像明细」](../README.md#演示录像明细v100-release-附件)；
