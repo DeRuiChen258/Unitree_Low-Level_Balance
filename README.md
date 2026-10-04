@@ -1,6 +1,7 @@
 # G1 小脑平衡 + 多动作自适应组合系统
 
 仓库：<https://github.com/DeRuiChen258/Unitree_Low-Level_Balance>（License: MIT）
+演示录像（5 段 MP4 + 合并完整版 + 抽帧图）：[Releases · v1.0.0](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/tag/v1.0.0)
 
 > 基于 MuJoCo 的 Unitree G1 小脑平衡与多动作自适应系统：动作数据管线与 IK 重定向、教师 ONNX 复用加 PPO 残差、技能原语组合调度、LayA 结构化决策、安全门禁与 SDK2 预留。在此之上实现自主弯腰拾取：双手抱两侧、可搬运约半体重重物、绕柱避障，全程零穿模，并提供一键可视化演示与 MP4 录像
 
@@ -64,6 +65,33 @@ python scripts/demo_balance_extra.py --scenario walk|walk_run|run_stop|pillar_sl
 
 > 注：本机 Wayland/EGL 下 MuJoCo 交互窗口在**进程退出阶段**可能 segfault（发生在结果落盘之后），
 > `start.sh` 已容错；需要无崩溃输出时用 `RENDER=video`。详见 `.agent/failures.md`。
+
+### 演示录像明细（v1.0.0 Release 附件）
+
+已录好的 MP4 挂在 [Releases · v1.0.0](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/tag/v1.0.0)
+（不占 git 历史），逐段内容与实测指标如下（1 seed，全部**无安全拦截、无摔倒**）：
+
+| 录像 | 场景与命令 | 实测指标 | 关注点 |
+| --- | --- | --- | --- |
+| [1_walk.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/1_walk.mp4) | 行走：`--scenario walk`，0.8 m/s，8 s | roll 1.99° / pitch 2.38°，裕度最小 −0.017 | 稳态行走姿态与支撑域裕度 |
+| [2_walk_run.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/2_walk_run.mp4) | 加速：`walk_run`，0.6 → 2.0 m/s | roll 4.07° / pitch 3.25°，裕度最小 −0.058 | 提速过程中教师策略与残差接管 |
+| [3_run_stop.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/3_run_stop.mp4) | 急停：`run_stop`，2.0 m/s → 停止 | roll 5.37° / pitch 7.14°，**急停距离 1.49 m** | 急停姿态冲击与制动距离 |
+| [4_pillar_slalom.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/4_pillar_slalom.mp4) | 绕桩：`pillar_slalom`，3 根柱、左右交替 | 柱1 让位 +0.96 / 柱2 +0.51 / 柱3 +1.42（判定阈值 0.45 m），最小间距 0.44 m | 逐柱通过判定 `pillar_passed_all=True` |
+| [5_pickup_heavy.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/5_pickup_heavy.mp4) | 抱重物：`run_pickup --scenario front` | **16.67 kg（≈本体 50%）**，成功 6.87 s、0 脚步、零穿模（最小间隙 +0.025 m） | 双手抱两侧、腕部平贴箱面、握持在侧面 70% 高度 |
+| [demo_full.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/demo_full.mp4) | 上述 5 段 ffmpeg 合并的完整记录（约 2 min） | — | 一键演示的整体节奏与连贯性 |
+
+抽帧核验图（已随仓库入库，可直接在下方预览）：
+
+绕桩全过程（可见每根柱子都在**预定侧**绕过，第 2 根改到右侧通过）：
+
+![绕桩全过程抽帧](recordings/frame_sheet_slalom.png)
+
+抱取重物全过程（握持点在箱体侧面约 70% 高度，双掌与箱面平齐）：
+
+![抱取重物抽帧](recordings/frame_sheet_pickup.png)
+
+如需在本地同时看窗口并录像：`./start.sh`（默认 `RECORD=1`）；
+无显示器环境用 `RENDER=none RECORD=1 ./start.sh`，约 2 分钟产出全部 6 个 MP4 文件。
 
 ## G1 自主弯腰拾取 + 自主弓步（新增需求 v1.0）
 

@@ -3,6 +3,24 @@
 本目录保存 `./start.sh` 全流程演示的**抽帧核验图**；MP4 录像体积较大，未纳入版本库，
 按下面命令可一键重新生成（本地实测：5 段合计约 30 MB）。
 
+> 已录好的演示录像（5 段 MP4 + 合并完整版 + 抽帧图，共 8 个附件）见
+> [Releases · v1.0.0](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/tag/v1.0.0)；
+> 逐段说明与实测指标见主 [README「演示录像明细」](../README.md#演示录像明细v100-release-附件)；
+> 也可以按下面命令自行重跑生成。
+
+## 附件直链（Release v1.0.0）
+
+| 文件 | 直链 |
+| --- | --- |
+| `1_walk.mp4` | https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/1_walk.mp4 |
+| `2_walk_run.mp4` | https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/2_walk_run.mp4 |
+| `3_run_stop.mp4` | https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/3_run_stop.mp4 |
+| `4_pillar_slalom.mp4` | https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/4_pillar_slalom.mp4 |
+| `5_pickup_heavy.mp4` | https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/5_pickup_heavy.mp4 |
+| `demo_full.mp4`（合并） | https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/demo_full.mp4 |
+| `frame_sheet_slalom.png` | https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/frame_sheet_slalom.png |
+| `frame_sheet_pickup.png` | https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/frame_sheet_pickup.png |
+
 ```bash
 # 有窗口 + 同步录像（推荐，需要显示器）
 ./start.sh
