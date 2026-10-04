@@ -8,6 +8,11 @@
 以小脑平衡策略为底座、技能原语为积木、LayA 结构化决策为路由的 Unitree G1 低层行为系统。
 完整规格见 `Prompt/小脑平衡多动作自适应系统_完整实现提示词.md`，实现台账见 `TASK.md`。
 
+
+<!-- VIDEO_TEST_START -->
+<video src="https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/demo_full.mp4" controls muted loop width="100%"></video>
+<!-- VIDEO_TEST_END -->
+
 ## 快速开始
 
 ```bash
