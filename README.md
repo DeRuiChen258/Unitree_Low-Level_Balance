@@ -19,7 +19,7 @@ Python 3.12 · PyTorch 2.14 (cu130) · MuJoCo 3.13 · Unitree G1（29 DOF）
 3. [仓库结构](#3-仓库结构)
 4. [环境与依赖（CUDA / CPU 分工）](#4-环境与依赖cuda--cpu-分工)
 5. [快速开始](#5-快速开始)
-6. [全流程演示（含内嵌动图与逐段录像）](#6-全流程演示含内嵌动图与逐段录像)
+6. [全流程演示（分场景内嵌 GIF + 逐段录像）](#6-全流程演示分场景内嵌-gif--逐段录像)
 7. [关键实测指标](#7-关键实测指标)
 8. [拾取子系统详解](#8-拾取子系统详解)
 9. [决策层与安全层](#9-决策层与安全层)
@@ -181,36 +181,77 @@ pytest -q && ruff check src scripts tests
 
 ---
 
-## 6. 全流程演示（含内嵌动图与逐段录像）
+## 6. 全流程演示（分场景内嵌 GIF + 逐段录像）
 
 `start.sh` 依次演示：**行走 → 加速跑步 → 急停 → 绕多个柱子 → 停下来抱重物**，
 覆盖平衡系统（教师策略 + 技能 + 安全层 + 平衡指标）与拾取系统（双手抱两侧 + 半体重载荷）。
 
-### 6.1 完整演示（正文内联播放）
+下面 **6.1–6.5 每个小节对应一个场景**：GIF 是该场景**完整录像（未剪辑、未加速）**，
+可直接在正文播放；同一行给出复现命令、实测指标与原始 MP4 下载链接
+（GIF 为 360×270 / 5 fps / 64 色，总 12.7 MB；MP4 为 640×480 / 50 fps，画质更好）。
+1 seed 实测，**全部无安全拦截、无摔倒**。
 
-下面的动图由 `recordings/demo_full.mp4` 转制（3× 加速、400×300、6.8 MB），
-对应上面 5 个场景的**完整无剪辑流程**：
+### 6.1 ① 行走（`walk`，0.8 m/s）
 
-![G1 全流程演示：行走 → 加速跑步 → 急停 → 绕 3 根柱子 → 停下弯腰抱起重物](recordings/demo_full.gif)
+![行走 0.8 m/s 完整录像](recordings/1_walk.gif)
 
-> GitHub 会过滤 README 中的 `<video>` 标签（已实测：raw 文件保留、渲染 HTML 无 `<video>`），
-> 因此正文用动图内联播放；**原始 2 分钟 MP4**（30 MB，含音轨无关的完整帧率）见
-> [Release v1.0.0 / demo_full.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/demo_full.mp4)。
+| 项 | 内容 |
+| --- | --- |
+| 命令 | `python scripts/demo_balance_extra.py --scenario walk --render viewer --record` |
+| 时长 / 帧率 | 12.0 s / 50 fps（GIF 2.3 MB） |
+| 实测指标 | roll 峰值 1.99°、pitch 峰值 2.38°、支撑裕度最小 −0.017，安全拦截 0 |
+| 关注点 | 稳态行走姿态、步态相位、支撑域裕度 |
+| 原始录像 | [1_walk.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/1_walk.mp4) |
 
-### 6.2 逐段录像明细（Release v1.0.0 附件）
+### 6.2 ② 加速跑步（`walk_run`，0.6 → 2.0 m/s）
 
-1 seed 实测，全部**无安全拦截、无摔倒**：
+![加速跑步完整录像](recordings/2_walk_run.gif)
 
-| 录像 | 场景与命令 | 实测指标 | 关注点 |
-| --- | --- | --- | --- |
-| [1_walk.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/1_walk.mp4) | `--scenario walk`，0.8 m/s，8 s | roll 1.99° / pitch 2.38°，裕度最小 −0.017 | 稳态行走姿态与支撑域裕度 |
-| [2_walk_run.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/2_walk_run.mp4) | `walk_run`，0.6 → 2.0 m/s | roll 4.07° / pitch 3.25°，裕度最小 −0.058 | 提速过程中教师策略与残差接管 |
-| [3_run_stop.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/3_run_stop.mp4) | `run_stop`，2.0 m/s → 停止 | roll 5.37° / pitch 7.14°，**急停距离 1.49 m** | 急停姿态冲击与制动距离 |
-| [4_pillar_slalom.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/4_pillar_slalom.mp4) | `pillar_slalom`，3 根柱、左右交替 | 柱1 +0.96 / **柱2 +0.51** / 柱3 +1.42（阈值 0.45 m），最小间距 0.44 m | 逐柱通过判定 `pillar_passed_all=True` |
-| [5_pickup_heavy.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/5_pickup_heavy.mp4) | `run_pickup --scenario front` | **16.67 kg（≈本体 50%）**，成功 6.87 s、0 脚步、零穿模（间隙 +0.025 m） | 双手抱两侧、掌面平贴、握持在侧面 70% 高度 |
-| [demo_full.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/demo_full.mp4) | 上述 5 段 ffmpeg 合并（≈2 min，30 MB） | — | 整体节奏与连贯性 |
+| 项 | 内容 |
+| --- | --- |
+| 命令 | `--scenario walk_run`（场景脚本：walk 3 s @0.6 → run 6 s @2.0） |
+| 时长 / 帧率 | 14.0 s / 50 fps（GIF 2.7 MB） |
+| 实测指标 | roll 峰值 4.07°、pitch 峰值 3.25°、裕度最小 −0.058 |
+| 关注点 | 提速过程中教师策略与残差接管、速度跟踪与姿态耦合 |
+| 原始录像 | [2_walk_run.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/2_walk_run.mp4) |
 
-### 6.3 抽帧核验图
+### 6.3 ③ 急停（`run_stop`，2.0 m/s → 停止）
+
+![急停完整录像](recordings/3_run_stop.gif)
+
+| 项 | 内容 |
+| --- | --- |
+| 命令 | `--scenario run_stop`（场景脚本：run 4 s @2.0 → stand） |
+| 时长 / 帧率 | 12.0 s / 50 fps（GIF 1.9 MB） |
+| 实测指标 | roll 峰值 5.37°、pitch 峰值 7.14°、**急停距离 1.49 m** |
+| 关注点 | 急停姿态冲击、制动距离与支撑域关系 |
+| 原始录像 | [3_run_stop.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/3_run_stop.mp4) |
+
+### 6.4 ④ 绕 3 根柱子（`pillar_slalom`，左右交替）
+
+![绕桩完整录像](recordings/4_pillar_slalom.gif)
+
+| 项 | 内容 |
+| --- | --- |
+| 命令 | `--scenario pillar_slalom --pillars "4.5,0.45;8.0,-0.45;11.5,0.45"` |
+| 时长 / 帧率 | 22.0 s / 50 fps（GIF 4.0 MB） |
+| 实测指标 | 柱1 让位 +0.96 / **柱2 +0.51** / 柱3 +1.42（判定阈值 0.45 m），最小间距 0.44 m，`pillar_passed_all=True` |
+| 关注点 | 横向让位 + look-ahead 航向控制；每根柱子在**预定侧**通过（第 2 根已修正） |
+| 原始录像 | [4_pillar_slalom.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/4_pillar_slalom.mp4) |
+
+### 6.5 ⑤ 停下弯腰抱起重物（`pickup front`，16.67 kg ≈ 本体 50%）
+
+![抱起重物完整录像](recordings/5_pickup_heavy.gif)
+
+| 项 | 内容 |
+| --- | --- |
+| 命令 | `python scripts/run_pickup.py --scenario front --baseline C --render viewer --record` |
+| 时长 / 帧率 | 13.7 s / 50 fps（GIF 1.8 MB，任务本体 6.87 s） |
+| 实测指标 | 成功 6.87 s、0 脚步、无摔倒、**零穿模**（最小间隙 +0.025 m），载荷 16.67 kg |
+| 关注点 | 双手抱**两侧面**、掌面与箱面偏差 ≤0.9°、腕 roll ±0.03 rad、握持在侧面 70% 高度 |
+| 原始录像 | [5_pickup_heavy.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/5_pickup_heavy.mp4) |
+
+### 6.6 抽帧核验图
 
 绕桩全过程（每根柱子都在**预定侧**绕过；第 2 根已从"贴柱擦过"修正为右侧通过）：
 
@@ -220,7 +261,7 @@ pytest -q && ruff check src scripts tests
 
 ![抱取重物抽帧](recordings/frame_sheet_pickup.png)
 
-### 6.4 命令与录制参数
+### 6.7 录制参数与完整合并录像
 
 ```bash
 ./start.sh                        # 依次弹出 5 个 MuJoCo 窗口，并同步录像
@@ -232,6 +273,13 @@ STEPS=600 SEED=2 CARRY_MASS=16.67 PILLARS="4.5,0.45;8.0,-0.45;11.5,0.45" ./start
 
 演示结束后录像自动归档到 `recordings/`（`1_walk.mp4` … `5_pickup_heavy.mp4`），
 并用 ffmpeg 合并为 `demo_full.mp4`；抽帧图见 `frame_sheet_slalom.png`、`frame_sheet_pickup.png`。
+
+完整合并录像（5 段首尾相接，73.7 s / 50 fps / 30 MB）：
+[demo_full.mp4](https://github.com/DeRuiChen258/Unitree_Low-Level_Balance/releases/download/v1.0.0/demo_full.mp4)。
+
+> GitHub 会过滤 README 中的 `<video>` 标签（已实测：raw 文件保留、渲染 HTML 无 `<video>`），
+> 因此正文用分场景 GIF 内联播放；需要连贯的完整视频或更高画质时用上面的 MP4。
+> 若想本地重新生成同规格 GIF，见 `recordings/README.md` 的 ffmpeg 命令。
 
 单场景入口：
 
