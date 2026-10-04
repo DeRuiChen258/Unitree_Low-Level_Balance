@@ -144,6 +144,19 @@
   （原语表 / IK 与 PD / 载荷模型 / 判定门禁）、决策层与安全层、测试与验收门禁、
   已知限制与披露（8 条）、Roadmap、许可与致谢。
 
+### 2026-10-05 追加：演示录像按场景拆分为 5 个子章节内嵌 GIF
+
+- 用户要求「在 README 正文看完整 GIF」→ 实现为**分场景子章节**：
+  `recordings/{1_walk,2_walk_run,3_run_stop,4_pillar_slalom,5_pickup_heavy}.gif`
+  （360×270 / 5 fps / 64 色，各自完整未剪辑未加速，合计 12.7 MB），
+  分别内嵌在 README 6.1–6.5 小节，每节配「复现命令 / 时长帧率 / 实测指标 / 关注点 / 原始 MP4 直链」表；
+  6.6 保留抽帧核验图，6.7 说明录制参数与 73.7 s 合并 MP4。
+- 移除了单张 8.4 MB 的全流程 GIF（`demo_full.gif`）：完整内容改由 5 段分场景 GIF 覆盖，
+  连贯完整版仍为 Release 附件 `demo_full.mp4`；`recordings/README.md` 给出重建命令。
+- 渲染校验：GitHub 页面 HTML 中确认 7 个内联图（5 GIF + 2 抽帧 PNG）均已渲染（非 `<video>`）。
+- 推送备注：首次 push 因 13 MB 二进制触发 `sideband packet` 断开，设置
+  `http.postBuffer=512MB` + `http.version=HTTP/1.1` 后重推成功（提交 `cbecbb7`）。
+
 ## 2026-10-05 主平衡系统可视化演示（用户要求）
 
 - 入口：`python scripts/demo.py --scenario <run_wave|run_jump|turn_wave> --render viewer`
