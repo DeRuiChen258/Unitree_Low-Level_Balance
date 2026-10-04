@@ -117,7 +117,19 @@
 - **全程录屏**：`scripts/demo_balance_extra.py` 与 `scripts/run_pickup.py` 新增 `--record`
   （viewer 模式同步录制）；`start.sh` 默认 `RECORD=1`，跑完自动把 5 段录像归档到
   `recordings/{1_walk,2_walk_run,3_run_stop,4_pillar_slalom,5_pickup_heavy}.mp4`，
-  并用 ffmpeg 合并为 `recordings/demo_full.mp4`（约 30 MB，总时长 ~2 min）。
+ 并用 ffmpeg 合并为 `recordings/demo_full.mp4`（约 30 MB，总时长 ~2 min）。
+
+### 2026-10-05 追加：开源到 GitHub
+
+- 仓库：<https://github.com/DeRuiChen258/Unitree_Low-Level_Balance>（PUBLIC，MIT LICENSE
+  来自远端初始提交，已保留）。
+- 提交：`fd9cade`（224 文件/24738 行初版）+ `a1383d4`（合并远端 Initial commit，
+  README 顶部保留其项目简介）。
+- topics：`unitree`、`jev`（用户要求）+ `mujoco`、`humanoid-robot`、
+  `reinforcement-learning`、`robotics`、`loco-manipulation`、`balance-control`。
+- `.gitignore` 排除运行/训练产物（`runs/`、`experiments/`、`*.npz/pth/pt`）与 MP4 录像，
+  保留 `recordings/frame_sheet_*.png` 抽帧证据；录像可由 `RENDER=none RECORD=1 ./start.sh` 重建。
+- 敏感信息扫描（token/私钥/password）无命中。
 
 ## 2026-10-05 主平衡系统可视化演示（用户要求）
 

@@ -1,5 +1,7 @@
 # G1 小脑平衡 + 多动作自适应组合系统
 
+仓库：<https://github.com/DeRuiChen258/Unitree_Low-Level_Balance>（License: MIT）
+
 > 基于 MuJoCo 的 Unitree G1 小脑平衡与多动作自适应系统：动作数据管线与 IK 重定向、教师 ONNX 复用加 PPO 残差、技能原语组合调度、LayA 结构化决策、安全门禁与 SDK2 预留。在此之上实现自主弯腰拾取：双手抱两侧、可搬运约半体重重物、绕柱避障，全程零穿模，并提供一键可视化演示与 MP4 录像
 
 以小脑平衡策略为底座、技能原语为积木、LayA 结构化决策为路由的 Unitree G1 低层行为系统。
