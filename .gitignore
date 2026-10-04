@@ -29,3 +29,10 @@ MUJOCO_LOG.TXT
 .idea/
 .vscode/
 .DS_Store
+
+# 远端初始提交保留的规则
+# Object file
+*.o
+
+# Ada Library Information
+*.ali
