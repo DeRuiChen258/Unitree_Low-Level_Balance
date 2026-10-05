@@ -172,10 +172,6 @@ def main() -> int:
     ]
     missing_docs = [name for name in required_docs if not (ROOT / "docs" / "design" / name).is_file()]
     checks.append(_check("docs", not missing_docs, f"missing={missing_docs}"))
-    # 9 记忆
-    memory_files = [ROOT / ".agent" / name for name in ("state.md", "decisions.md", "memory.md", "failures.md")]
-    memory_ok = all(path.is_file() and path.stat().st_size > 0 for path in memory_files)
-    checks.append(_check("memory", memory_ok, ",".join(path.name for path in memory_files)))
     # 10b 拾取系统（新增需求）：Demo / baseline / ablation / 文档 / 测试文件
     pickup_demos = sorted((ROOT / "experiments").glob("*pickup*/metrics.json"))
     demo_ok = False

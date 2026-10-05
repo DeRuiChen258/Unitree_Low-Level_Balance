@@ -49,4 +49,4 @@ escalation rate、decision-flip rate。产物：`runs/decision/<id>/`。
 - **P99 目标 150 ms 未达成**：单流单条推理在长选项文本下出现偶发 300 ms 尾部。
   缓解路径：服务侧 batch 窗口累积（batch 8/16）、ONNX Runtime 导出、缩短 motion 头选项文案
   （需升 `questions_version` 并重新校准）、降频到 5 Hz + hold-last-valid（控制回路不等决策）。
-  该偏差已写入 `.agent/failures.md`，不得声称 P99 达标。
+  该偏差已记录于本文档与 CHANGELOG，不得声称 P99 达标。

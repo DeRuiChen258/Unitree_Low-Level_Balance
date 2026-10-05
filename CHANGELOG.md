@@ -32,7 +32,7 @@
   FastAPI 服务（单条/批量/health/version）。
 - 安全层：限位/速率/jerk 条件器、看门狗、状态机、E-Stop、SafetyWrapper；
   SDK2 LowCmd+CRC dry-run。
-- 72 项 pytest、`scripts/verify.py --all` 验收门禁、9 份设计文档与 `.agent/` 记忆。
+- 72 项 pytest、`scripts/verify.py --all` 验收门禁与 9 份设计文档。
 
 ### Known limitations
 

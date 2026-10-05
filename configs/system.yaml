@@ -13,16 +13,16 @@ joint_order: policy   # 部署/策略关节序（isaac），与 g1_amp.yaml 一�
 limits:
   # 策略关节序（29 DOF）关节限位，来源：Action/G1_run/deploy/g1_deploy/config/g1_amp.yaml
   # 与 assets/g1_29dof.xml（isaac_to_mujoco_map 映射）。代码启动时与 MJCF 交叉校验。
-  mjcf_scene: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/assets/scene_29dof.xml
+  mjcf_scene: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/assets/scene_29dof.xml
 
 paths:
-  dataset_root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1
-  action_root: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action
-  laya_root: /home/violet/Workspace/Model/laya/model/convaiinnovations/laya
-  mujoco_viewer: /home/violet/Workspace/Code/Embedded_code/unitree_workspace/scripts/mujoco_sim.py
-  gmr_root: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/legged_rl_lab/GMR
-  menagerie_g1: /home/violet/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1
-  menagerie_scene: /home/violet/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1/scene.xml
+  dataset_root: ~/Workspace/Data/Embodied_AI/Unitree_G1
+  action_root: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action
+  laya_root: ~/Workspace/Model/laya/model/convaiinnovations/laya
+  mujoco_viewer: ~/Workspace/Code/Embedded_code/unitree_workspace/scripts/mujoco_sim.py
+  gmr_root: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/legged_rl_lab/GMR
+  menagerie_g1: ~/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1
+  menagerie_scene: ~/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1/scene.xml
   runs_dir: runs
 
 runtime:

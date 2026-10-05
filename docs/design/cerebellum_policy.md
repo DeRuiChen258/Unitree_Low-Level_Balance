@@ -13,7 +13,7 @@
 本机未安装 IsaacLab / rsl_rl，8 GB 显存无法承载 4096 并行 Isaac 环境。
 训练栈降级为 **MuJoCo 3.13 + 自研 PPO**（接口对齐 rsl_rl）：
 环境步进在 CPU（8 环境并行），PPO 更新在 GPU，显存占用低。
-该偏差已写入 `TASK.md`、`.agent/decisions.md`。
+该偏差已在 `configs/train_g1_balance.yaml` 与本文档中显式记录。
 
 ## 3. 教师策略（复用而非重造）
 
@@ -49,7 +49,7 @@ roll 峰值 9.0°、pitch 峰值 5.4°、jump/wave 成功率 1.0、转弯最差 
 
 恢复时间：静态站立目标 1.5 s（recover 技能单测）；组合场景（跑步+挥手持续摆动）
 按基线校准为 4.0 s（实测最差 3.88 s，rolling-median 判据 +2.5 s 观测窗口过滤），
-该偏差在 `configs/train_g1_balance.yaml` 与 `.agent/decisions.md` 中显式记录。
+该偏差在 `configs/train_g1_balance.yaml` 中显式记录。
 
 ## 6. 导出
 

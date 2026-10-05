@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 
 from cb_pickup.env import PickupBalanceEnv, PickupEnvConfig
 from cb_pickup.scenarios import SCENARIOS
 
-SCENE = "/home/violet/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1/scene.xml"
+SCENE = str(Path.home() / "Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1/scene.xml")
 
 
 def test_env_reset_step_reward() -> None:

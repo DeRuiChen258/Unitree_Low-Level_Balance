@@ -31,6 +31,17 @@ def deep_merge(base: dict[str, Any], override: Mapping[str, Any]) -> dict[str, A
     return out
 
 
+def _expand_paths(obj: Any) -> Any:
+    """递归展开以 `~` 开头的字符串路径，使配置可用 `~/...` 表达本机路径。"""
+    if isinstance(obj, str):
+        return str(Path(obj).expanduser()) if obj.startswith("~/") else obj
+    if isinstance(obj, Mapping):
+        return {key: _expand_paths(value) for key, value in obj.items()}
+    if isinstance(obj, list):
+        return [_expand_paths(item) for item in obj]
+    return obj
+
+
 def _apply_env_overrides(data: dict[str, Any], prefix: str = "CB") -> dict[str, Any]:
     """环境变量覆盖：`CB_<SECTION>__<KEY>=value`，value 按 YAML 解析。
 
@@ -126,6 +137,7 @@ def load_config(
     if overrides:
         data = deep_merge(data, overrides)
     data = _apply_env_overrides(data, prefix=env_prefix)
+    data = _expand_paths(data)
     cfg = Config(data, file_path)
     if required:
         cfg.require(required)

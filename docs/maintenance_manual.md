@@ -20,5 +20,4 @@
 
 ## 升级流程
 
-1. 更新配置/代码 → 2. 跑单测 → 3. 跑三组合评测 → 4. 更新 CHANGELOG/文档 →
-5. 更新 `.agent/{state,decisions,memory,failures}.md` → 6. 打 tag。
+1. 更新配置/代码 → 2. 跑单测 → 3. 跑三组合评测 → 4. 更新 CHANGELOG/文档 → 5. 打 tag。

@@ -1,5 +1,5 @@
 # G1 弯腰拾取 + 自主弓步系统配置（新增需求）
-scene_path: /home/violet/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1/scene.xml
+scene_path: ~/Workspace/Code/Embedded_code/unitree_workspace/mujoco_menagerie/unitree_g1/scene.xml
 
 # 频率（第 23 节）：500 Hz 物理 / 100 Hz 控制 / 20 Hz 决策 / 10 Hz 脚步
 sim_dt: 0.002

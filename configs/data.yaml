@@ -4,23 +4,23 @@ seed: 1
 sources:
   humanml3d_272d:
     enabled: true
-    root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1/HumanML3D_272d
+    root: ~/Workspace/Data/Embodied_AI/Unitree_G1/HumanML3D_272d
     fps: 30.0
     license: academic-AMASS-HumanML3D
     use_zip: false          # 只读解压目录，禁止 zip/目录混用
   humanml3d_263d:
     enabled: false          # 本机仅解出 1 个样本，默认关闭；开启但缺文件时显式报错
-    root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1/HumanML3D/HumanML3D
+    root: ~/Workspace/Data/Embodied_AI/Unitree_G1/HumanML3D/HumanML3D
     fps: 30.0
     license: academic
   kit_ml:
     enabled: false          # .rar 未解压；开启即报错拒绝运行
-    root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1/KIT-ML
+    root: ~/Workspace/Data/Embodied_AI/Unitree_G1/KIT-ML
     fps: 12.5
     license: academic
   amass:
     enabled: false          # 空目录；禁止静默跳过统计
-    root: /home/violet/Workspace/Data/Embodied_AI/Unitree_G1/AMASS
+    root: ~/Workspace/Data/Embodied_AI/Unitree_G1/AMASS
     fps: 120.0
     license: academic
 profiles:

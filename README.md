@@ -123,13 +123,10 @@ Low_Level_balance/
 │   ├── demo.py                  #   平衡系统 demo（run_wave / run_jump / turn_wave）
 │   ├── demo_balance_extra.py    #   压力场景（walk/walk_run/run_stop/pillar_avoid/pillar_slalom/carry_box）
 │   ├── run_pickup.py            #   弯腰拾取一条命令跑通（viewer/video/–record）
-│   └── verify.py                #   16 项验收门禁（--all）
+│   └── verify.py                #   验收门禁（--all）
 ├── tests/                       # pytest（数据/特征/训练/技能/决策/安全/服务/机器人/拾取）
 ├── docs/design/                 # 设计文档（架构、特征、技能、决策、安全、服务、sim2real、拾取…）
-├── Prompt/                      # 需求提示词与参考资料（含 2 篇数据增强参考论文）
-├── recordings/                  # 演示动图/抽帧图（MP4 见 Release，可一键重建）
-├── .agent/                      # 实现台账（state/decisions/memory/failures）
-└── TASK.md                      # 任务书与 Checklist（逐项勾选）
+└── recordings/                  # 演示动图/抽帧图（MP4 见 Release，可一键重建）
 ```
 
 ---
@@ -174,7 +171,7 @@ python scripts/eval.py --run runs/exp/<name> --seeds 10
 python scripts/serve.py --config configs/serving.yaml
 pytest -q tests/test_safety_*.py
 
-# 5 验收（16 项门禁）
+# 5 验收（15 项门禁）
 python scripts/verify.py --all
 pytest -q && ruff check src scripts tests
 ```
@@ -290,7 +287,7 @@ python scripts/run_pickup.py --scenario front --baseline C --render viewer --rec
 ```
 
 > 注：本机 Wayland/EGL 下 MuJoCo 交互窗口在**进程退出阶段**可能 segfault（发生在结果与录像落盘之后），
-> `start.sh` 已容错并提示；需要完全无崩溃输出时用 `RENDER=video`。详见 `.agent/failures.md`。
+> `start.sh` 已容错并提示；需要完全无崩溃输出时用 `RENDER=video`。
 
 ---
 
@@ -390,7 +387,7 @@ front 场景时间线：弯腰 2.2 s → 伸手 1.8 s → 双手抱取 0.5 s →
 ```bash
 pytest -q                        # 全部单测/集成测试（数据/特征/训练/技能/决策/安全/服务/机器人/拾取）
 ruff check src scripts tests     # 静态检查
-python scripts/verify.py --all   # 16 项验收门禁 → OVERALL PASS
+python scripts/verify.py --all   # 15 项验收门禁 → OVERALL PASS
 ```
 
 `verify.py` 覆盖：环境自检、数据 manifest、特征 obs_spec_hash、ONNX 一致性、组合评测、
@@ -408,7 +405,7 @@ python scripts/verify.py --all   # 16 项验收门禁 → OVERALL PASS
 4. **手臂可达下探约 0.56–0.60 m**：地面箱体的握持点必然偏上；本工程把箱体改为
    0.20×0.20×0.90 m 使握持点落在侧面 ~70% 高度；需要更低握持可用 `object_base_height_m` 加台面。
 5. **负结果**：PPO 残差组合评测 16/18 摔倒、蒸馏学生绝对模式 18/18 摔倒（需 DAgger）；
-   默认控制器保持"教师 + 技能 + 安全层"，负结果记录于 `.agent/failures.md` 与消融报告。
+   默认控制器保持"教师 + 技能 + 安全层"，负结果记录于消融报告与 CHANGELOG。
 6. **LayA 延迟**：P99 323 ms > 150 ms 目标，当前只做离线/低频结构化决策。
 7. **环境问题**：Wayland/EGL 下 MuJoCo 交互窗口在退出阶段可能 segfault（结果与录像已落盘），
    非仿真本身缺陷；`start.sh` 已容错。
@@ -430,7 +427,6 @@ python scripts/verify.py --all   # 16 项验收门禁 → OVERALL PASS
 
 ## 13. 许可与致谢
 
-- License：[MIT](LICENSE)（Copyright © 2026 CDR）。
+- License：[MIT](LICENSE)（Copyright © 2026 Unitree_Low-Level_Balance Authors）。
 - 教师策略与部分模型资产来自 Unitree 官方动作工程（`G1_run` / `G1_Walk` / `G1_Waving`）与
   MuJoCo Menagerie 的 G1 模型；动作数据来自 HumanML3D_272d 表示。
-- 需求与设计提示词见 `Prompt/`，实现台账见 `TASK.md` 与 `.agent/`。

@@ -12,17 +12,17 @@ calibration_file: configs/laya/calibration.yaml
 allow_heuristic_fallback: true     # 显式降级（记录 reason），仅在模型不可用时
 checkpoints:
   base:
-    dir: /home/violet/Workspace/Model/laya/model/convaiinnovations/laya
+    dir: ~/Workspace/Model/laya/model/convaiinnovations/laya
     encoder: encoder
     weights: model.safetensors
     tokenizer: tokenizer
   typed-decisions:
-    dir: /home/violet/Workspace/Model/laya/model/convaiinnovations/laya/typed-decisions
+    dir: ~/Workspace/Model/laya/model/convaiinnovations/laya/typed-decisions
     encoder: encoder
     weights: model.safetensors
     tokenizer: tokenizer
   multilingual:
-    dir: /home/violet/Workspace/Model/laya/model/convaiinnovations/laya/multilingual
+    dir: ~/Workspace/Model/laya/model/convaiinnovations/laya/multilingual
     encoder: encoder
     weights: model.safetensors
     tokenizer: tokenizer

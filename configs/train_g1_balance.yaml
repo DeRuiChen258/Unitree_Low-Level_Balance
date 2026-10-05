@@ -10,17 +10,17 @@ sim_dt: 0.005
 
 teacher:
   run:
-    config: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/config/g1_amp.yaml
-    onnx: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/exported_policy/g1_run.onnx
-    deploy_dir: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy
+    config: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/config/g1_amp.yaml
+    onnx: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy/exported_policy/g1_run.onnx
+    deploy_dir: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_run/deploy/g1_deploy
   walk:
-    config: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/config/g1_amp.yaml
-    onnx: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/exported_policy/g1_walk.onnx
-    deploy_dir: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy
+    config: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/config/g1_amp.yaml
+    onnx: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/exported_policy/g1_walk.onnx
+    deploy_dir: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy
   jump:
-    config: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/config/g1_mimic.yaml
-    onnx: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/exported_policy/g1_jump.onnx
-    deploy_dir: /home/violet/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy
+    config: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/config/g1_mimic.yaml
+    onnx: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy/exported_policy/g1_jump.onnx
+    deploy_dir: ~/Workspace/Code/Project/Embodied_AI/Unitree/Action/G1_Walk/deploy/g1_deploy
     enabled: false          # tracking 策略需要 160 维参考观测；默认关闭，见 docs/design/cerebellum_policy.md
 
 obs:
